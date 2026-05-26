@@ -46,6 +46,9 @@ export default function GLBModelViewerPage() {
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
+  const dpr: [number, number] = isMobile ? [1, 1.5] : [1, 2];
+  const cameraPosition: [number, number, number] = isMobile ? [0, 1.3, 4.5] : [0, 1.5, 5];
+
   const handleReset = () => {
     if (controlsRef.current) {
       controlsRef.current.reset();
@@ -62,27 +65,30 @@ export default function GLBModelViewerPage() {
         <div className="relative h-full w-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_rgba(0,0,0,0.55)] backdrop-blur-sm sm:rounded-[2.5rem]">
           
           <Canvas
-            camera={{ position: [0, 1.5, 5], fov: isMobile ? 50 : 45 }}
-            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-            dpr={[1, 2]}
+            camera={{ position: cameraPosition, fov: isMobile ? 52 : 45 }}
+            gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+            dpr={dpr}
+            performance={{ min: 0.35, max: 1 }}
+            onCreated={({ gl }) => gl.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))}
           >
-            <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 5, 5]} intensity={1.5} />
-            <directionalLight position={[-5, 5, -5]} intensity={0.5} />
+            <ambientLight intensity={0.55} />
+            <directionalLight position={[5, 5, 5]} intensity={1.2} />
+            <directionalLight position={[-5, 5, -5]} intensity={0.6} />
+            <hemisphereLight color="#ffffff" groundColor="#151520" intensity={0.35} />
             
             <Suspense fallback={<Loader />}>
-              <Bounds fit clip margin={isMobile ? 1.2 : 1.1}>
+              <Bounds fit clip margin={isMobile ? 1.3 : 1.1}>
                 <Float
                   speed={isMobile ? 2.5 : 2}
-                  rotationIntensity={0.15} 
-                  floatIntensity={0.2}
+                  rotationIntensity={0.12} 
+                  floatIntensity={0.18}
                   floatingRange={[-0.02, 0.02]} 
                 >
                   <Model url={MODEL_URL} />
                 </Float>
               </Bounds>
 
-              <Environment preset="studio" />
+              {!isMobile && <Environment preset="studio" />}
             </Suspense>
 
             {/* FULLY UNLOCKED CONTROLS */}
@@ -91,7 +97,7 @@ export default function GLBModelViewerPage() {
               makeDefault
               enableDamping
               dampingFactor={0.04} // Smooth glide
-              rotateSpeed={isMobile ? 0.7 : 0.8} 
+              rotateSpeed={isMobile ? 0.65 : 0.85} 
               
               // 1. Zoom is enabled (Pinch to zoom)
               enableZoom={true}
@@ -106,7 +112,7 @@ export default function GLBModelViewerPage() {
               maxPolarAngle={Math.PI} 
               
               autoRotate={true}
-              autoRotateSpeed={1.0}
+              autoRotateSpeed={0.95}
             />
           </Canvas>
 
