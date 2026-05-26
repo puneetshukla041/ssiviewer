@@ -70,9 +70,9 @@ export default function GLBModelViewerPage() {
             performance={{ min: 0.35, max: 1 }}
             onCreated={({ gl }) => gl.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))}
           >
-            <ambientLight intensity={0.45} />
-            <directionalLight color="#ffffff" position={[5, 5, 5]} intensity={1.15} />
-            <directionalLight color="#ffffff" position={[-5, 5, -5]} intensity={0.85} />
+            <ambientLight intensity={0.35} />
+            <directionalLight color="#ffffff" position={[5, 5, 5]} intensity={1.0} />
+            <directionalLight color="#ffffff" position={[-5, 5, -5]} intensity={0.75} />
 
             <Suspense fallback={<Loader />}>
               <Bounds fit clip margin={isMobile ? 1.3 : 1.1}>
@@ -92,21 +92,23 @@ export default function GLBModelViewerPage() {
               ref={controlsRef}
               makeDefault
               enableDamping
-              dampingFactor={0.05}
-              rotateSpeed={isMobile ? 0.85 : 1}
-              enableRotate={true}
+              dampingFactor={0.04} // Smooth glide
+              rotateSpeed={isMobile ? 0.65 : 0.85} 
+              
+              // 1. Zoom is enabled (Pinch to zoom)
               enableZoom={true}
-              zoomSpeed={isMobile ? 0.9 : 1}
-              enablePan={true}
-              panSpeed={isMobile ? 1 : 1.2}
-              screenSpacePanning={false}
-              minDistance={2}
-              maxDistance={12}
-              minAzimuthAngle={-Infinity}
-              maxAzimuthAngle={Infinity}
-              minPolarAngle={0}
-              maxPolarAngle={Math.PI}
-              autoRotate={false}
+              zoomSpeed={isMobile ? 0.8 : 1}
+              
+              // 2. Pan is enabled (Two fingers to drag the model up/down/left/right)
+              enablePan={true} 
+              panSpeed={isMobile ? 0.8 : 1}
+              
+              // 3. Full 360 Vertical View (Look straight down the top, and straight up the bottom)
+              minPolarAngle={0} 
+              maxPolarAngle={Math.PI} 
+              
+              autoRotate={true}
+              autoRotateSpeed={0.95}
             />
           </Canvas>
 
