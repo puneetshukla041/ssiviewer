@@ -4,12 +4,11 @@ import React, { Suspense, useMemo, useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
-  Environment,
   Html,
   useGLTF,
   Bounds,
   useProgress,
-  Float, 
+  Float,
 } from "@react-three/drei";
 import { RotateCcw } from "lucide-react";
 
@@ -71,11 +70,10 @@ export default function GLBModelViewerPage() {
             performance={{ min: 0.35, max: 1 }}
             onCreated={({ gl }) => gl.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))}
           >
-            <ambientLight intensity={0.55} />
-            <directionalLight position={[5, 5, 5]} intensity={1.2} />
-            <directionalLight position={[-5, 5, -5]} intensity={0.6} />
-            <hemisphereLight color="#ffffff" groundColor="#151520" intensity={0.35} />
-            
+            <ambientLight intensity={0.35} />
+            <directionalLight color="#ffffff" position={[5, 5, 5]} intensity={1.0} />
+            <directionalLight color="#ffffff" position={[-5, 5, -5]} intensity={0.75} />
+
             <Suspense fallback={<Loader />}>
               <Bounds fit clip margin={isMobile ? 1.3 : 1.1}>
                 <Float
@@ -87,8 +85,6 @@ export default function GLBModelViewerPage() {
                   <Model url={MODEL_URL} />
                 </Float>
               </Bounds>
-
-              {!isMobile && <Environment preset="studio" />}
             </Suspense>
 
             {/* FULLY UNLOCKED CONTROLS */}
