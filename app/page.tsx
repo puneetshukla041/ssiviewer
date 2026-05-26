@@ -3,14 +3,13 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
-  OrbitControls,
+  OrbitControls, // <-- Back to Orbit, but highly customized
   Environment,
   Html,
   useGLTF,
   Bounds,
-  ContactShadows,
   useProgress,
-  Float, // <-- Added for the premium hover effect
+  Float, 
 } from "@react-three/drei";
 import { RotateCcw } from "lucide-react";
 
@@ -72,44 +71,35 @@ export default function GLBModelViewerPage() {
             
             <Suspense fallback={<Loader />}>
               <Bounds fit clip margin={isMobile ? 1.2 : 1.1}>
-                {/* 🌟 Premium Hover Effect */}
                 <Float
-                  speed={isMobile ? 2.5 : 2} // Animation speed
-                  rotationIntensity={0.2} // Subtle wobbly rotation
-                  floatIntensity={0.2} // Very slight up/down bobbing
+                  speed={isMobile ? 2.5 : 2}
+                  rotationIntensity={0.15} // Slightly reduced to prevent fighting the user's swipe
+                  floatIntensity={0.2}
                   floatingRange={[-0.02, 0.02]} 
                 >
                   <Model url={MODEL_URL} />
                 </Float>
               </Bounds>
 
-              {/* Shadows adjusted to accommodate the new Float effect */}
-              <ContactShadows
-                position={[0, -1, 0]}
-                opacity={0.6}
-                scale={12}
-                blur={2.5}
-                far={4}
-                resolution={isMobile ? 256 : 512}
-                frames={1}
-              />
-
               <Environment preset="studio" />
             </Suspense>
 
+            {/* 🧈 The "Butter" Controls */}
             <OrbitControls
               ref={controlsRef}
               makeDefault
               enableDamping
-              dampingFactor={0.04} // Silkier glide when letting go
-              minDistance={1}
-              maxDistance={10}
-              enablePan={false}
-              // 🌟 360 Auto-Rotation Settings
+              dampingFactor={0.035} // The magic number for a silky, heavy glide
+              rotateSpeed={isMobile ? 0.6 : 0.8} // Tuned so 1 thumb swipe = perfect rotation
+              zoomSpeed={isMobile ? 0.7 : 1}
+              enablePan={false} // NEVER let the user accidentally drag the model off-screen
+              
+              // 🌟 Unlock the 360 Vertical View
+              minPolarAngle={0} // Lets you look straight down from the top
+              maxPolarAngle={Math.PI} // Lets you look straight up from the bottom!
+              
               autoRotate={true}
-              autoRotateSpeed={isMobile ? 2.0 : 1.2} // Spins slightly faster on mobile
-              rotateSpeed={isMobile ? 0.8 : 0.6} // Tuned for touch screens
-              zoomSpeed={0.8}
+              autoRotateSpeed={isMobile ? 1.5 : 1.0}
             />
           </Canvas>
 
