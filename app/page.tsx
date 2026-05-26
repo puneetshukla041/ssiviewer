@@ -70,9 +70,9 @@ export default function GLBModelViewerPage() {
             performance={{ min: 0.35, max: 1 }}
             onCreated={({ gl }) => gl.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))}
           >
-            <ambientLight intensity={0.35} />
-            <directionalLight color="#ffffff" position={[5, 5, 5]} intensity={1.0} />
-            <directionalLight color="#ffffff" position={[-5, 5, -5]} intensity={0.75} />
+            <ambientLight intensity={0.45} />
+            <directionalLight color="#ffffff" position={[5, 5, 5]} intensity={1.15} />
+            <directionalLight color="#ffffff" position={[-5, 5, -5]} intensity={0.85} />
 
             <Suspense fallback={<Loader />}>
               <Bounds fit clip margin={isMobile ? 1.3 : 1.1}>
