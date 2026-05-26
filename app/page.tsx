@@ -3,7 +3,7 @@
 import React, { Suspense, useMemo, useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
-  OrbitControls, // <-- Back to Orbit, but highly customized
+  OrbitControls,
   Environment,
   Html,
   useGLTF,
@@ -58,7 +58,8 @@ export default function GLBModelViewerPage() {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_18%,rgba(0,0,0,0.22))]" />
 
       <section className="relative h-[100dvh] w-full p-3 sm:p-5">
-        <div className="relative h-full w-full touch-none overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_rgba(0,0,0,0.55)] backdrop-blur-sm sm:rounded-[2.5rem]">
+        {/* REMOVED 'touch-none' so you can actually scroll your webpage again! */}
+        <div className="relative h-full w-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_rgba(0,0,0,0.55)] backdrop-blur-sm sm:rounded-[2.5rem]">
           
           <Canvas
             camera={{ position: [0, 1.5, 5], fov: isMobile ? 50 : 45 }}
@@ -73,7 +74,7 @@ export default function GLBModelViewerPage() {
               <Bounds fit clip margin={isMobile ? 1.2 : 1.1}>
                 <Float
                   speed={isMobile ? 2.5 : 2}
-                  rotationIntensity={0.15} // Slightly reduced to prevent fighting the user's swipe
+                  rotationIntensity={0.15} 
                   floatIntensity={0.2}
                   floatingRange={[-0.02, 0.02]} 
                 >
@@ -84,22 +85,28 @@ export default function GLBModelViewerPage() {
               <Environment preset="studio" />
             </Suspense>
 
-            {/* 🧈 The "Butter" Controls */}
+            {/* FULLY UNLOCKED CONTROLS */}
             <OrbitControls
               ref={controlsRef}
               makeDefault
               enableDamping
-              dampingFactor={0.035} // The magic number for a silky, heavy glide
-              rotateSpeed={isMobile ? 0.6 : 0.8} // Tuned so 1 thumb swipe = perfect rotation
-              zoomSpeed={isMobile ? 0.7 : 1}
-              enablePan={false} // NEVER let the user accidentally drag the model off-screen
+              dampingFactor={0.04} // Smooth glide
+              rotateSpeed={isMobile ? 0.7 : 0.8} 
               
-              // 🌟 Unlock the 360 Vertical View
-              minPolarAngle={0} // Lets you look straight down from the top
-              maxPolarAngle={Math.PI} // Lets you look straight up from the bottom!
+              // 1. Zoom is enabled (Pinch to zoom)
+              enableZoom={true}
+              zoomSpeed={isMobile ? 0.8 : 1}
+              
+              // 2. Pan is enabled (Two fingers to drag the model up/down/left/right)
+              enablePan={true} 
+              panSpeed={isMobile ? 0.8 : 1}
+              
+              // 3. Full 360 Vertical View (Look straight down the top, and straight up the bottom)
+              minPolarAngle={0} 
+              maxPolarAngle={Math.PI} 
               
               autoRotate={true}
-              autoRotateSpeed={isMobile ? 1.5 : 1.0}
+              autoRotateSpeed={1.0}
             />
           </Canvas>
 
