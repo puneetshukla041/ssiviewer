@@ -10,6 +10,7 @@ import {
   Bounds,
   ContactShadows,
   useProgress,
+  Float, // <-- Added for the premium hover effect
 } from "@react-three/drei";
 import { RotateCcw } from "lucide-react";
 
@@ -61,23 +62,33 @@ export default function GLBModelViewerPage() {
         <div className="relative h-full w-full touch-none overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_rgba(0,0,0,0.55)] backdrop-blur-sm sm:rounded-[2.5rem]">
           
           <Canvas
-            camera={{ position: [0, 1.5, 5], fov: 45 }}
+            camera={{ position: [0, 1.5, 5], fov: isMobile ? 50 : 45 }}
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
             dpr={[1, 2]}
           >
-            <ambientLight intensity={0.5} />
+            <ambientLight intensity={0.6} />
             <directionalLight position={[5, 5, 5]} intensity={1.5} />
+            <directionalLight position={[-5, 5, -5]} intensity={0.5} />
             
             <Suspense fallback={<Loader />}>
-              <Bounds fit clip margin={isMobile ? 1.4 : 1.2}>
-                <Model url={MODEL_URL} />
+              <Bounds fit clip margin={isMobile ? 1.2 : 1.1}>
+                {/* 🌟 Premium Hover Effect */}
+                <Float
+                  speed={isMobile ? 2.5 : 2} // Animation speed
+                  rotationIntensity={0.2} // Subtle wobbly rotation
+                  floatIntensity={0.2} // Very slight up/down bobbing
+                  floatingRange={[-0.02, 0.02]} 
+                >
+                  <Model url={MODEL_URL} />
+                </Float>
               </Bounds>
 
+              {/* Shadows adjusted to accommodate the new Float effect */}
               <ContactShadows
                 position={[0, -1, 0]}
-                opacity={0.5}
-                scale={10}
-                blur={2}
+                opacity={0.6}
+                scale={12}
+                blur={2.5}
                 far={4}
                 resolution={isMobile ? 256 : 512}
                 frames={1}
@@ -90,10 +101,15 @@ export default function GLBModelViewerPage() {
               ref={controlsRef}
               makeDefault
               enableDamping
-              dampingFactor={0.05}
+              dampingFactor={0.04} // Silkier glide when letting go
               minDistance={1}
               maxDistance={10}
               enablePan={false}
+              // 🌟 360 Auto-Rotation Settings
+              autoRotate={true}
+              autoRotateSpeed={isMobile ? 2.0 : 1.2} // Spins slightly faster on mobile
+              rotateSpeed={isMobile ? 0.8 : 0.6} // Tuned for touch screens
+              zoomSpeed={0.8}
             />
           </Canvas>
 
@@ -101,12 +117,12 @@ export default function GLBModelViewerPage() {
             type="button"
             aria-label="Reset view"
             onClick={handleReset}
-            className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/10 text-white shadow-xl backdrop-blur-md transition-all hover:bg-white/20 active:scale-90 sm:right-6 sm:top-6 sm:h-12 sm:w-12"
+            className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/10 text-white shadow-xl backdrop-blur-md transition-all hover:bg-white/20 active:scale-90 sm:right-6 sm:top-6 sm:h-12 sm:w-12 z-10"
           >
             <RotateCcw className="h-5 w-5" />
           </button>
 
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/50 to-transparent z-0" />
         </div>
       </section>
     </main>
